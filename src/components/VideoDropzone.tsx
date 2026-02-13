@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { Upload, Film, Link2 } from "lucide-react";
+import { Upload, Film, Link2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
@@ -7,11 +7,12 @@ import { toast } from "@/hooks/use-toast";
 interface VideoDropzoneProps {
   onVideoSelect: (file: File) => void;
   onUrlSelect: (url: string) => void;
+  urlLoading?: boolean;
 }
 
-const ACCEPTED = ["video/mp4", "video/webm", "video/quicktime"];
+const ACCEPTED = ["video/mp4", "video/webm", "video/quicktime", "audio/mpeg", "audio/wav", "audio/ogg", "audio/webm"];
 
-const VideoDropzone = ({ onVideoSelect, onUrlSelect }: VideoDropzoneProps) => {
+const VideoDropzone = ({ onVideoSelect, onUrlSelect, urlLoading }: VideoDropzoneProps) => {
   const [dragging, setDragging] = useState(false);
   const [mediaUrl, setMediaUrl] = useState("");
 
@@ -67,11 +68,10 @@ const VideoDropzone = ({ onVideoSelect, onUrlSelect }: VideoDropzoneProps) => {
         }}
         onDragLeave={() => setDragging(false)}
         onDrop={handleDrop}
-        className={`relative flex flex-col items-center justify-center gap-4 p-12 rounded-2xl border-2 border-dashed transition-all cursor-pointer ${
-          dragging
+        className={`relative flex flex-col items-center justify-center gap-4 p-12 rounded-2xl border-2 border-dashed transition-all cursor-pointer ${dragging
             ? "border-primary bg-primary/5 scale-[1.01]"
             : "border-border hover:border-primary/40 hover:bg-muted/50"
-        }`}
+          }`}
         onClick={() => document.getElementById("video-input")?.click()}
       >
         <div className="h-16 w-16 rounded-2xl bg-primary/10 flex items-center justify-center">
@@ -82,15 +82,15 @@ const VideoDropzone = ({ onVideoSelect, onUrlSelect }: VideoDropzoneProps) => {
           )}
         </div>
         <div className="text-center">
-          <p className="text-lg font-medium">Glissez-déposez votre vidéo ici</p>
+          <p className="text-lg font-medium">Glissez-déposez votre média ici</p>
           <p className="text-sm text-muted-foreground mt-1">
-            ou cliquez pour sélectionner — MP4, WebM, MOV
+            ou cliquez pour sélectionner — MP4, WebM, WAV, MP3
           </p>
         </div>
         <input
           id="video-input"
           type="file"
-          accept="video/mp4,video/webm,video/quicktime"
+          accept="video/*,audio/*"
           className="hidden"
           onChange={handleFileInput}
         />
@@ -113,12 +113,19 @@ const VideoDropzone = ({ onVideoSelect, onUrlSelect }: VideoDropzoneProps) => {
               }
             }}
           />
-          <Button type="button" onClick={handleUrlSubmit}>
-            Charger le lien
+          <Button type="button" onClick={handleUrlSubmit} disabled={urlLoading}>
+            {urlLoading ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                Chargement...
+              </>
+            ) : (
+              "Charger le lien"
+            )}
           </Button>
         </div>
         <p className="text-xs text-muted-foreground">
-          Idéal pour les vidéos hébergées en ligne. Selon la source, des limites CORS peuvent s'appliquer.
+          Fonctionne avec YouTube, liens directs (MP4, WebM), et autres sources. Pour YouTube, yt-dlp doit être installé.
         </p>
       </div>
     </div>

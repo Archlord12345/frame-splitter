@@ -1,11 +1,16 @@
-export interface ExtractedFrame {
+export interface MediaSnippet {
   id: string;
   timestamp: number;
-  dataUrl: string;
+  dataUrl: string; // URL or Base64
   selected: boolean;
+  type: 'image' | 'video' | 'audio';
+  filename?: string;
 }
 
-export type ExtractionMode = 'interval' | 'count' | 'manual';
+// Keep the old name for backward compatibility if needed, or just alias it
+export type ExtractedFrame = MediaSnippet;
+
+export type ExtractionMode = 'interval' | 'count' | 'manual' | 'trim';
 export type ImageFormat = 'png' | 'jpeg';
 
 export function captureFrame(
