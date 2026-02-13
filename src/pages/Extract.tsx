@@ -21,6 +21,7 @@ const Extract = () => {
   const navigate = useNavigate();
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
+  const [sourceLabel, setSourceLabel] = useState<string | null>(null);
   const [videoDuration, setVideoDuration] = useState(0);
 
   const [mode, setMode] = useState<ExtractionMode>("interval");
@@ -35,6 +36,14 @@ const Extract = () => {
   const handleVideoSelect = useCallback((file: File) => {
     const url = URL.createObjectURL(file);
     setVideoUrl(url);
+    setSourceLabel(file.name);
+    setFrames([]);
+    setProgress(0);
+  }, []);
+
+  const handleUrlSelect = useCallback((url: string) => {
+    setVideoUrl(url);
+    setSourceLabel(url);
     setFrames([]);
     setProgress(0);
   }, []);
@@ -95,7 +104,10 @@ const Extract = () => {
 
       <div className="max-w-7xl mx-auto px-6 py-8 space-y-8">
         {!videoUrl ? (
-          <VideoDropzone onVideoSelect={handleVideoSelect} />
+          <VideoDropzone
+            onVideoSelect={handleVideoSelect}
+            onUrlSelect={handleUrlSelect}
+          />
         ) : (
           <>
             <div className="grid lg:grid-cols-[1fr_340px] gap-8">
@@ -115,11 +127,17 @@ const Extract = () => {
                   size="sm"
                   onClick={() => {
                     setVideoUrl(null);
+                    setSourceLabel(null);
                     setFrames([]);
                   }}
                 >
                   Changer de vidéo
                 </Button>
+                {sourceLabel && (
+                  <p className="text-xs text-muted-foreground break-all">
+                    Source: {sourceLabel}
+                  </p>
+                )}
               </div>
 
               {/* Controls */}
