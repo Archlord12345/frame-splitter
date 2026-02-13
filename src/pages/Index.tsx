@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Film, ImageIcon, Download, Scissors } from "lucide-react";
+import { Film, Link2, Scissors, Smartphone, Timer } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const Index = () => {
@@ -7,14 +7,13 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Hero */}
       <header className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-accent/10" />
         <nav className="relative z-10 flex items-center justify-between px-6 py-4 max-w-7xl mx-auto">
           <div className="flex items-center gap-2">
             <Scissors className="h-7 w-7 text-primary" />
-            <span className="text-xl font-bold tracking-tight" style={{ fontFamily: 'Space Grotesk' }}>
-              FrameCut
+            <span className="text-xl font-bold tracking-tight" style={{ fontFamily: "Space Grotesk" }}>
+              InstantCut
             </span>
           </div>
         </nav>
@@ -22,44 +21,45 @@ const Index = () => {
         <div className="relative z-10 flex flex-col items-center text-center px-6 pt-20 pb-28 max-w-4xl mx-auto">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-8">
             <Film className="h-4 w-4" />
-            Extraction d'images depuis vos vidéos
+            Découpe vidéo/audio depuis un simple lien URL
           </div>
           <h1 className="text-5xl md:text-7xl font-bold tracking-tight leading-tight mb-6">
-            Découpez vos vidéos
+            La découpe média
             <br />
-            <span className="text-primary">en images</span>
+            <span className="text-primary">précise et instantanée</span>
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mb-10">
-            Importez une vidéo, choisissez votre mode d'extraction et téléchargez vos frames en un clic. Tout se passe dans votre navigateur.
+          <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mb-10">
+            InstantCut est une plateforme web/mobile révolutionnaire pour découper vos vidéos et audios sans
+            téléchargement complet par l'utilisateur. Collez un lien, définissez vos points de coupe et exportez
+            avec une précision chirurgicale.
           </p>
           <Button
             size="lg"
             className="text-lg px-8 py-6 rounded-xl shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all"
             onClick={() => navigate("/extract")}
           >
-            Commencer l'extraction
+            Commencer maintenant
           </Button>
         </div>
       </header>
 
-      {/* Features */}
       <section className="py-20 px-6 max-w-6xl mx-auto">
         <div className="grid md:grid-cols-3 gap-8">
           {[
             {
-              icon: Film,
-              title: "3 modes d'extraction",
-              desc: "Par intervalle, par nombre total, ou manuellement frame par frame.",
+              icon: Link2,
+              title: "Découpe depuis URL",
+              desc: "Importez un média via lien et lancez le traitement sans flux complexe côté utilisateur.",
             },
             {
-              icon: ImageIcon,
-              title: "Galerie d'aperçu",
-              desc: "Visualisez, sélectionnez et supprimez vos images avant l'export.",
+              icon: Timer,
+              title: "Précision chirurgicale",
+              desc: "Définissez vos extraits au dixième de seconde pour des segments propres et exploitables.",
             },
             {
-              icon: Download,
-              title: "Export flexible",
-              desc: "Téléchargez vos images en ZIP ou individuellement, en PNG ou JPEG.",
+              icon: Smartphone,
+              title: "Web + mobile",
+              desc: "Une expérience fluide sur desktop et smartphone pour produire partout, rapidement.",
             },
           ].map((f, i) => (
             <div
@@ -76,9 +76,8 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="border-t border-border py-8 text-center text-sm text-muted-foreground">
-        <p>FrameCut — Extraction d'images vidéo côté navigateur</p>
+        <p>InstantCut — Le découpage vidéo/audio depuis URL, simplement.</p>
       </footer>
     </div>
   );
