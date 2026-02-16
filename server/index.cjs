@@ -162,6 +162,9 @@ app.post('/api/download-url', async (req, res) => {
     const parsed = new URL(url);
     const isYouTube = parsed.hostname.includes('youtube.com') || parsed.hostname.includes('youtu.be');
     
+    // Detect if URL contains audio file extensions
+    const isAudioUrl = url.includes('.mp3') || url.includes('.wav') || url.includes('.ogg') || url.includes('.m4a') || url.includes('.flac');
+    
     let outputFilename;
     let outputPath;
     
@@ -284,7 +287,14 @@ app.post('/api/download-url', async (req, res) => {
       }
     } else {
       // Direct download for non-YouTube URLs
-      outputFilename = `download-${Date.now()}.mp4`;
+      const extension = isAudioUrl ? 
+        (url.includes('.mp3') ? '.mp3' : 
+         url.includes('.wav') ? '.wav' : 
+         url.includes('.ogg') ? '.ogg' : 
+         url.includes('.m4a') ? '.m4a' : 
+         url.includes('.flac') ? '.flac' : '.mp3') : '.mp4';
+      
+      outputFilename = `download-${Date.now()}${extension}`;
       outputPath = path.join(__dirname, 'uploads', outputFilename);
       
       try {
@@ -310,7 +320,8 @@ app.post('/api/download-url', async (req, res) => {
       path: `/uploads/${outputFilename}`,
       fullPath: outputPath,
       sessionId,
-      source: isYouTube ? 'youtube' : 'direct'
+      source: isYouTube ? 'youtube' : 'direct',
+      mediaType: isAudioUrl || (isYouTube && outputFilename.includes('.mp3')) ? 'audio' : 'video'
     });
     
   } catch (error) {

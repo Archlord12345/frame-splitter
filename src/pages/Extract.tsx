@@ -112,20 +112,22 @@ const Extract = () => {
         throw new Error(data.error || data.hint || "Failed to download");
       }
       
-      // Use the downloaded file from server
+      // Use downloaded file from server
       const serverUrl = `http://localhost:3001${data.path}`;
       setVideoUrl(serverUrl);
       setServerFilename(data.filename);
-      setIsAudio(false); // Videos from URLs are treated as video by default
+      
+      // Use server media type detection
+      setIsAudio(data.mediaType === 'audio');
       
       toast({ 
-        title: data.source === 'youtube' ? "Vidéo YouTube chargée" : "Média chargé",
-        description: "Prêt pour l'extraction"
+        title: data.source === 'youtube' ? "📥 Vidéo YouTube téléchargée" : "📥 Média téléchargé",
+        description: data.mediaType === 'audio' ? "Audio prêt pour le découpage" : "Vidéo prête pour le découpage"
       });
     } catch (error: any) {
       console.error("URL download error:", error);
       toast({ 
-        title: "Erreur de chargement",
+        title: "❌ Erreur de chargement",
         description: error.message || "Impossible de charger le média depuis cette URL",
         variant: "destructive"
       });
