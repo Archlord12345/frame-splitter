@@ -31,9 +31,10 @@ const Extract = () => {
   // Cleanup function when user leaves
   useEffect(() => {
     const handleBeforeUnload = () => {
+      // Send session ID for proper cleanup
       navigator.sendBeacon(
         'http://localhost:3001/api/cleanup',
-        JSON.stringify({})
+        JSON.stringify({ sessionId: sessionIdRef.current })
       );
     };
     

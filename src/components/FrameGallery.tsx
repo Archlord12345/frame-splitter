@@ -72,12 +72,39 @@ const FrameGallery = ({
     }
   };
 
-  const downloadSingle = (frame: ExtractedFrame) => {
-    const link = document.createElement("a");
-    link.href = frame.dataUrl;
+  const downloadSingle = async (frame: ExtractedFrame) => {
     const ext = frame.type === 'image' ? format : (frame.type === 'audio' ? 'mp3' : 'mp4');
-    link.download = `${frame.type}-${formatTimestamp(frame.timestamp)}.${ext}`;
-    link.click();
+    const filename = `${frame.type}-${formatTimestamp(frame.timestamp)}.${ext}`;
+    
+    if (frame.dataUrl.startsWith('data:')) {
+      // For data URLs, convert to blob and use saveAs
+      const base64 = frame.dataUrl.split(",")[1];
+      const byteCharacters = atob(base64);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { 
+        type: frame.type === 'image' ? `image/${format}` : 
+              frame.type === 'audio' ? 'audio/mp3' : 'video/mp4' 
+      });
+      saveAs(blob, filename);
+    } else {
+      // For URLs, fetch and download as blob
+      try {
+        const response = await fetch(frame.dataUrl);
+        const blob = await response.blob();
+        saveAs(blob, filename);
+      } catch (error) {
+        // Fallback to link method for CORS issues
+        const link = document.createElement("a");
+        link.href = frame.dataUrl;
+        link.download = filename;
+        link.target = '_blank';
+        link.click();
+      }
+    }
   };
 
   const downloadZip = async () => {

@@ -147,8 +147,31 @@ app.post('/api/heartbeat', (req, res) => {
 // Manual cleanup endpoint
 app.post('/api/cleanup', (req, res) => {
   const sessionId = req.headers['x-session-id'] || 'default';
-  cleanupSession(sessionId);
+  const { sessionId: requestedSessionId } = req.body;
+  
+  // Use session ID from body if provided, otherwise from header
+  const targetSessionId = requestedSessionId || sessionId;
+  
+  console.log(`[Cleanup] Manual cleanup requested for session: ${targetSessionId}`);
+  cleanupSession(targetSessionId);
   res.json({ ok: true, message: 'Session cleaned up' });
+});
+
+// Heartbeat endpoint to keep sessions alive
+app.post('/api/heartbeat', (req, res) => {
+  const sessionId = req.headers['x-session-id'] || 'default';
+  const { timestamp } = req.body;
+  
+  if (!sessions.has(sessionId)) {
+    sessions.set(sessionId, { files: [], lastActivity: Date.now() });
+    console.log(`[Heartbeat] Created new session: ${sessionId}`);
+  } else {
+    const session = sessions.get(sessionId);
+    session.lastActivity = Date.now();
+    console.log(`[Heartbeat] Updated activity for session: ${sessionId}`);
+  }
+  
+  res.json({ ok: true, sessionId, timestamp: Date.now() });
 });
 
 // Download from URL (handles YouTube via yt-dlp if available, or direct downloads)
