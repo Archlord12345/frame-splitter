@@ -7,6 +7,7 @@ import VideoDropzone from "@/components/VideoDropzone";
 import ExtractionControls from "@/components/ExtractionControls";
 import FrameGallery from "@/components/FrameGallery";
 import WaveSurferPlayer from "@/components/WaveSurferPlayer";
+import TrimRuler from "@/components/TrimRuler";
 import {
   captureFrame,
   extractByInterval,
@@ -144,6 +145,10 @@ const Extract = () => {
       setVideoDuration(videoRef.current.duration);
       setEndTime(videoRef.current.duration);
     }
+  };
+
+  const handleTimeUpdate = () => {
+    // Time update is handled by TrimRuler component
   };
 
   const handleTrim = async () => {
@@ -334,6 +339,7 @@ const Extract = () => {
                       controls
                       className="w-full"
                       onLoadedMetadata={handleMetadata}
+                      onTimeUpdate={handleTimeUpdate}
                     />
                   )}
                 </div>
@@ -353,6 +359,21 @@ const Extract = () => {
                     Source: {sourceLabel}
                   </p>
                 )}
+              </div>
+
+              {/* Trim Ruler */}
+              <div className="bg-card rounded-2xl border border-border p-6">
+                <h3 className="text-lg font-semibold mb-4">Règle de découpage</h3>
+                <TrimRuler
+                  videoRef={videoRef}
+                  duration={videoDuration}
+                  startTime={startTime}
+                  endTime={endTime}
+                  onStartTimeChange={setStartTime}
+                  onEndTimeChange={setEndTime}
+                  onTrim={handleTrim}
+                  isAudio={isAudio}
+                />
               </div>
 
               {/* Controls */}
