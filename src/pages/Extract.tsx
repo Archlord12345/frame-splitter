@@ -287,6 +287,14 @@ const Extract = () => {
     toast({ title: `Image capturée à ${videoRef.current.currentTime.toFixed(2)}s` });
   };
 
+  const handleDeleteSelected = () => {
+    setFrames((prev) => prev.filter((f) => !f.selected));
+    toast({ 
+      title: "Extraits supprimés", 
+      description: `${frames.filter(f => f.selected).length} extrait(s) supprimé(s) avec succès` 
+    });
+  };
+
   return (
     <div className="min-h-screen bg-background relative">
       <nav className="sticky top-0 z-50 flex items-center gap-3 px-6 py-4 border-b border-border bg-background/80 backdrop-blur-md">
@@ -425,6 +433,7 @@ const Extract = () => {
               onDelete={(id) =>
                 setFrames((prev) => prev.filter((f) => f.id !== id))
               }
+              onDeleteSelected={handleDeleteSelected}
               onSelectAll={() =>
                 setFrames((prev) =>
                   prev.map((f) => ({ ...f, selected: true }))

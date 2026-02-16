@@ -10,6 +10,7 @@ interface FrameGalleryProps {
   frames: ExtractedFrame[];
   onToggleSelect: (id: string) => void;
   onDelete: (id: string) => void;
+  onDeleteSelected: () => void;
   onSelectAll: () => void;
   onDeselectAll: () => void;
   format: ImageFormat;
@@ -20,6 +21,7 @@ const FrameGallery = ({
   frames,
   onToggleSelect,
   onDelete,
+  onDeleteSelected,
   onSelectAll,
   onDeselectAll,
   format,
@@ -234,6 +236,17 @@ const FrameGallery = ({
             <PackageOpen className="h-3.5 w-3.5" />
             {downloading ? "…" : `ZIP (${selectedCount})`}
           </Button>
+          {selectedCount > 0 && (
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={onDeleteSelected}
+              className="gap-1"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+              Supprimer ({selectedCount})
+            </Button>
+          )}
         </div>
       </div>
 
@@ -281,11 +294,18 @@ const FrameGallery = ({
             <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
 
             {/* Timestamp */}
-            <span className="absolute bottom-1 left-1 text-[10px] font-mono bg-foreground/70 text-background px-1.5 py-0.5 rounded">
+            <span className="absolute bottom-1 left-8 text-[10px] font-mono bg-foreground/70 text-background px-1.5 py-0.5 rounded">
               {formatTimestamp(frame.timestamp)}
             </span>
 
             {/* Controls - toujours visibles */}
+            <div className="absolute top-1 left-1 z-10">
+              <Checkbox
+                checked={frame.selected}
+                onCheckedChange={() => onToggleSelect(frame.id)}
+                className="bg-background/90 border-2 border-foreground/20 data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+              />
+            </div>
             <div className="absolute top-1 right-1 flex gap-1 z-10">
               {(frame.type === 'audio' || frame.type === 'video') && (
                 <button
